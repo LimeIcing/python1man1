@@ -100,8 +100,19 @@ def main():
     # Creates a neat list of links in a string
     for reading in sorted(complete_readings_list):
         if reading != '' and reading[0] == '*':
-            complete_readings_str += reading[:3] + \
-                                   reading[3].upper() + reading[4:] + '\n '
+            first_letter_index = -1
+            i = 0
+
+            while first_letter_index == -1:
+                if reading[i].isalpha():
+                    first_letter_index = i
+                i += 1
+
+            complete_readings_str += reading[:first_letter_index] + \
+                                     reading[first_letter_index].upper() + \
+                                     reading[first_letter_index + 1:] + '\n '
+        else:
+            print(reading)
 
     os.chdir('..')
     string_to_file('required_reading.md', complete_readings_str)

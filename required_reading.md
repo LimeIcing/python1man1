@@ -3,8 +3,8 @@
  * [3.1.1. Numbers](https://docs.python.org/3.7/tutorial/introduction.html#numbers)
  * [3.1.2. Strings](https://docs.python.org/3.7/tutorial/introduction.html#strings)
  * [3.1.3. Lists](https://docs.python.org/3/tutorial/introduction.html#lists)
- * [4.1. if Statements](https://docs.python.org/3/tutorial/controlflow.html#if-statements)
- * [4.2. for Statements](https://docs.python.org/3/tutorial/controlflow.html#for-statements)
+ * [4.1. If Statements](https://docs.python.org/3/tutorial/controlflow.html#if-statements)
+ * [4.2. For Statements](https://docs.python.org/3/tutorial/controlflow.html#for-statements)
  * [4.3. The range() Function](https://docs.python.org/3/tutorial/controlflow.html#the-range-function)
  * [5.1. More on Lists](https://docs.python.org/3/tutorial/datastructures.html#more-on-lists)
  * [5.3. Tuples and Sequences](https://docs.python.org/3/tutorial/datastructures.html#tuples-and-sequences)
@@ -37,5 +37,5 @@
  * [Subprocess — Subprocess management](https://docs.python.org/3.7/library/subprocess.html#module-subprocess)
  * [Urllib — URL handling modules](https://docs.python.org/3/library/urllib.html#module-urllib)
  * [Urllib.request — Extensible library for opening URLs](https://docs.python.org/3/library/urllib.request.html#module-urllib.request)
- * kShfkjfkhskjdhdskjhjsfjdf
+ * Kshfkjfkhskjdhdskjhjsfjdf
  
