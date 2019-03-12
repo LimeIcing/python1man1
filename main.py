@@ -3,21 +3,36 @@ import urllib.error
 import subprocess
 import os
 
+
+def string_to_file(filename, content):
+    file = open(filename, 'w')
+    file.write(content)
+    file.close()
+
+
+def pull_files_with_readings(files_with_readings):
+    file = open('README.md').read()
+    if file.find('## Required reading') != -1:
+        files_with_readings.append(file)
+    os.chdir('..')
+
+
+# Pulls JSON from API and saves it locally
 try:
     json = urllib.request.urlopen(
         'https://api.github.com/orgs/python-elective-1-spring-2019/repos'
         '?per_page=100')
     json = json.read().decode('utf-8')
-    file = open('json.txt', 'w')
-    file.write(json)
-    file.close()
+    string_to_file('json.txt', json)
 except urllib.error.HTTPError as e:
     print(e)
 
-file = open('json.txt')
+jsonFile = open('json.txt')
+json = jsonFile.read()
+jsonFile.close()
 cloneURLStartIndexes = []
-json = file.read()
 
+# Finds appropriate Git URLs in JSON object
 i = 1
 while i != 0:
     i = json.find('clone_url', i)
@@ -28,6 +43,7 @@ while i != 0:
 cloneURLEndIndexes = []
 cloneURLs = []
 
+# Makes a list of found URLs
 for j in range(len(cloneURLStartIndexes)):
     cloneURLEndIndex = json.find('"', cloneURLStartIndexes[j])
     cloneURLs.append(json[cloneURLStartIndexes[j]:cloneURLEndIndex])
@@ -40,39 +56,52 @@ except FileExistsError as e:
 
 os.chdir('repos')
 readMes = []
+repoNames = []
 
 for url in cloneURLs:
-    repoName = url[49:-4]
+    repoNames.append(url[49:-4])
 
-    if repoName not in os.listdir('.'):
+    # Clones if repo is not found locally
+    # Pulls if it is
+    if repoNames[-1] not in os.listdir('.'):
         subprocess.run(['git', 'clone', url])
-        os.chdir(repoName)
-        readMe = open('README.md').read()
-        if readMe.find('## Required reading') != -1:
-            readMes.append(readMe)
-        os.chdir('..')
+        os.chdir(repoNames[-1])
+        pull_files_with_readings(readMes)
     else:
-        os.chdir(repoName)
+        os.chdir(repoNames[-1])
         subprocess.run(['git', 'pull'])
-        readMe = open('README.md').read()
-        if readMe.find('## Required reading') != -1:
-            readMes.append(readMe)
-        os.chdir('..')
+        pull_files_with_readings(readMes)
+
+# Deletes local repos if not found in hub
+for repo in os.listdir('.'):
+    if repo not in repoNames:
+        print('Removing ' + repo)
+        subprocess.run(['rm', '-rf', repo])
 
 requiredReadings = []
 
+# Finds 'Required Reading' sections in ReadMes
 for rm in readMes:
     requiredReadingIndex = rm.find('## Required reading')
     requiredReadings.append(
         rm[requiredReadingIndex:rm.find('##', requiredReadingIndex + 1)])
 
-completeReadings = ""
+completeReadingsList = []
 
+# Puts all links into a single list and checks for duplicates
 for reading in requiredReadings:
-    completeReadings += reading[20:]
+    readings = reading.split('\n')
+    for r in readings:
+        if r not in completeReadingsList:
+            completeReadingsList.append(r)
 
-print(completeReadings)
+completeReadingsStr = ''
+
+# Creates a neat list of links in a string
+for reading in sorted(completeReadingsList):
+    if reading != '' and reading[0] == '*':
+        completeReadingsStr += reading[:3] + \
+                               reading[3].upper() + reading[4:] + '\n '
 
 os.chdir('..')
-file = open('required_reading.md', 'w')
-file.write(completeReadings)
+string_to_file('required_reading.md', completeReadingsStr)
